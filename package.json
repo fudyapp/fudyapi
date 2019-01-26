@@ -4,7 +4,7 @@
   "description": "fudyapi node ",
   "main": "app.js",
   "scripts": {
-    "start":"nodemon app.js",
+    "start": "nodemon app.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "dependencies": {
@@ -22,10 +22,6 @@
     "path": "^0.12.7"
   },
   "devDependencies": {},
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/premku70/HFCS.git"
-  },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/premku70/fudyapi.git"

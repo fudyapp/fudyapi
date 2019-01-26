@@ -28,7 +28,7 @@ if(!isProduction) {
 }
 
 //Configure Mongoose
-mongoose.connect('mongodb://localhost/hfcs');
+mongoose.connect('mongodb://localhost/fudyapi',{ useNewUrlParser: true });
 mongoose.set('debug', true);
 
 //Models & routes

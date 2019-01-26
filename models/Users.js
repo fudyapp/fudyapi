@@ -5,9 +5,25 @@ const jwt = require('jsonwebtoken');
 const { Schema } = mongoose;
 
 const UsersSchema = new Schema({
-  email: String,
+  email: {
+    type:String,
+    required:true,
+    unique:true
+  },
+  firstName:String,
+  lastName:String,
+  phone:{
+    type:String,
+    maxlength: 12,
+    minlength:10
+  },
   hash: String,
   salt: String,
+  role:{
+    type:String,
+    enum:['admin','cashier','vendor','sadmin','user'],
+    default:'user'
+  }
 });
 
 UsersSchema.methods.setPassword = function(password) {
@@ -28,6 +44,7 @@ UsersSchema.methods.generateJWT = function() {
   return jwt.sign({
     email: this.email,
     id: this._id,
+    role:this.role,
     exp: parseInt(expirationDate.getTime() / 1000, 10),
   }, 'fudy123456secret');
 }
@@ -36,7 +53,19 @@ UsersSchema.methods.toAuthJSON = function() {
   return {
     _id: this._id,
     email: this.email,
+    firstName:this.firstName,
+    lastName:this.lastName,
+    phone:this.phone,
     token: this.generateJWT(),
+  };
+};
+UsersSchema.methods.toUserJSON = function() {
+  return {
+    _id: this._id,
+    email: this.email,
+    firstName:this.firstName,
+    lastName:this.lastName,
+    phone:this.phone,
   };
 };
 

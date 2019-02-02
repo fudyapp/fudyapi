@@ -31,6 +31,16 @@ const userSchema = new mongoose.Schema({
   isActive: {
     type: Boolean,
     default: true
+  },
+  owner: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'owner',
+    required: true,
+  },
+  company: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'company',
+    required: true,
   }
 });
 
@@ -62,9 +72,11 @@ function validateUser(user) {
       .max(255)
       .required(),
     role: Joi.string()
-      .valid('admin', 'cashier', 'vendor', 'sadmin')
-
-
+      .valid('admin', 'cashier', 'vendor', 'sadmin'),
+    owner: Joi.ObjectId()
+      .required(),
+    company: Joi.ObjectId()
+      .required()
   };
 
   return Joi.validate(user, schema);

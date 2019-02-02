@@ -9,7 +9,7 @@ module.exports = async function(req, res, next) {
 
   // if (!req.user.isAdmin) return res.status(403).send("Access denied.");
   let admin = await Admin.findOne({ _id: req.user._id });
-  if(admin.role === "sadmin" || admin.role === "sadmin"){
+  if(admin.role === "admin" || admin.role === "sadmin"){
    return  next();
   }else{
     return res.status(403).send("Access denied.");

@@ -1,0 +1,7 @@
+{
+    "jwtPrivateKey": "EV1g76zXXkdVcsU1wfef",
+    "db": "mongodb://localhost/fudy",
+    "port": "8000",
+    "requiresAuth": false
+  }
+  

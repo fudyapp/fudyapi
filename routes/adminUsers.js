@@ -20,7 +20,7 @@ router.post("/", async (req, res) => {
   let user = await Admin.findOne({ phone: req.body.phone });
   if (user) return res.status(400).send("User already registered.");
 
-  user = new Admin(_.pick(req.body, ["name", "password","phone","role"]));
+  user = new Admin(_.pick(req.body, ["name", "password","phone","role","owner","company"]));
   const salt = await bcrypt.genSalt(10);
   user.password = await bcrypt.hash(user.password, salt);
   await user.save();
@@ -28,7 +28,7 @@ router.post("/", async (req, res) => {
   const token = user.generateAuthToken();
   res
     .header("x-auth-token", token)
-    .send(_.pick(user, ["_id", "name","phone"]));
+    .send(_.pick(user, ["_id", "name","phone","owner","company"]));
 });
 
 router.post("/createadmin", [auth, sadmin], async (req, res) => {
@@ -38,11 +38,11 @@ router.post("/createadmin", [auth, sadmin], async (req, res) => {
   let user = await Admin.findOne({ phone: req.body.phone });
   if (user) return res.status(400).send("User already registered.");
 
-  user = new Admin(_.pick(req.body, ["name", "password","phone","role"]));
+  user = new Admin(_.pick(req.body, ["name", "password","phone","role","owner","company"]));
   const salt = await bcrypt.genSalt(10);
   user.password = await bcrypt.hash(user.password, salt);
   await user.save();
-  res.send(_.pick(user, ["_id", "name","phone"]));
+  res.send(_.pick(user, ["_id", "name","phone","owner","company"]));
 });
 
 router.post("/create", [auth, canCreate], async (req, res) => {
@@ -52,11 +52,11 @@ router.post("/create", [auth, canCreate], async (req, res) => {
   let user = await Admin.findOne({ phone: req.body.phone });
   if (user) return res.status(400).send("User already registered.");
 
-  user = new Admin(_.pick(req.body, ["name", "password","phone","role"]));
+  user = new Admin(_.pick(req.body, ["name", "password","phone","role","owner","company"]));
   const salt = await bcrypt.genSalt(10);
   user.password = await bcrypt.hash(user.password, salt);
   await user.save();
-  res.send(_.pick(user, ["_id", "name","phone"]));
+  res.send(_.pick(user, ["_id", "name","phone","owner","company"]));
 });
 
 router.put("/edit/:id", [auth, canCreate,validateObjectId], async (req, res) => {

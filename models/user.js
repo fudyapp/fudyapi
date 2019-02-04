@@ -30,7 +30,14 @@ const userSchema = new mongoose.Schema({
     maxlength: 1024
   }
 });
-
+userSchema.pre('save', function(next){
+  now = new Date();
+  this.updated_at = now;
+  if ( !this.created_at ) {
+    this.created_at = now;
+  }
+  next();
+});
 userSchema.methods.generateAuthToken = function() {
   const token = jwt.sign(
     {

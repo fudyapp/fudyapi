@@ -18,6 +18,13 @@ const Customer = mongoose.model('Customer', new mongoose.Schema({
     minlength: 5,
     maxlength: 50
   }
+}).pre('save', function(next){
+  now = new Date();
+  this.updated_at = now;
+  if ( !this.created_at ) {
+    this.created_at = now;
+  }
+  next();
 }));
 
 function validateCustomer(customer) {

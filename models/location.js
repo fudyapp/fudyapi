@@ -17,9 +17,16 @@ const Location = mongoose.model('Location', new mongoose.Schema({
         ref: 'company',
         required: true,
     }
-}));
+}).pre('save', function(next){
+    now = new Date();
+    this.updated_at = now;
+    if ( !this.created_at ) {
+      this.created_at = now;
+    }
+    next();
+  }));
 
-function validateOwner(location) {
+function validateLocation(location) {
     const schema = {
         name: Joi.string().min(5).max(50).required(),
         isActive: Joi.boolean(),
@@ -32,4 +39,4 @@ function validateOwner(location) {
 }
 
 exports.Location = Location;
-exports.validate = validateOwner;
+exports.validate = validateLocation;

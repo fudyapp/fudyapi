@@ -40,6 +40,11 @@ const Menu = mongoose.model('MenuItems', new mongoose.Schema({
     minlength: 5,
     maxlength: 255
 
+  },
+  vendor:{
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'vendor',
+    required: true,
   }
 }));
 
@@ -50,6 +55,8 @@ function validateMenu(menu) {
     numberInStock: Joi.number().min(0).required(),
     price: Joi.number().min(0).required(),
     image: Joi.string().min(5).max(50).required(),
+    vendor: Joi.objectId()
+    .required()
   };
 
   return Joi.validate(menu, schema);

@@ -42,11 +42,25 @@ const userSchema = new mongoose.Schema({
     ref: 'company',
     required: true,
   },
+  location: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'location',
+    required: true,
+  },
   manager: {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'manager'
    
   }
+});
+
+userSchema.pre('save', function(next){
+  now = new Date();
+  this.updated_at = now;
+  if ( !this.created_at ) {
+    this.created_at = now;
+  }
+  next();
 });
 
 userSchema.methods.generateAuthToken = function () {
@@ -81,6 +95,8 @@ function validateUser(user) {
     owner: Joi.objectId()
       .required(),
     company: Joi.objectId()
+      .required(),
+      location: Joi.objectId()
       .required()
   };
 
@@ -120,7 +136,10 @@ function ValidateRole(user) {
     company: Joi.objectId()
       .required(),
       manager: Joi.objectId()
+      .required(),
+      location: Joi.objectId()
       .required()
+      
   }
   return Joi.validate(user, schema);
 };

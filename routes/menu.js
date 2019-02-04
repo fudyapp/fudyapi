@@ -26,7 +26,8 @@ router.post("/", [auth], async (req, res) => {
     name: req.body.name,
     tags: req.body.tags,
     numberInStock: req.body.numberInStock,
-    price: req.body.price
+    price: req.body.price,
+    vendor: req.body.vendor
   });
   await menu.save();
 

@@ -1,11 +1,18 @@
 const { Company, validate } = require("../models/company");
+const validateObjectId = require("../middleware/validateObjectId");
 const auth = require("../middleware/auth");
 const express = require("express");
 const router = express.Router();
 const canCreate = require("../middleware/canCreate");
 
-router.get("/", auth, async (req, res) => {
+router.get("/", [auth, canCreate, validateObjectId], async (req, res) => {
   const company = await Company.find()
+    .select("-__v")
+    .sort("name");
+  res.send(company);
+});
+router.get("/:id", [auth, canCreate, validateObjectId], async (req, res) => {
+  const company = await Company.findById({"_id":req.params.id})
     .select("-__v")
     .sort("name");
   res.send(company);

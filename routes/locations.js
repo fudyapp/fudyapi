@@ -1,4 +1,5 @@
 const { Location, validate } = require("../models/location");
+const validateObjectId = require("../middleware/validateObjectId");
 const auth = require("../middleware/auth");
 const express = require("express");
 const router = express.Router();
@@ -6,6 +7,13 @@ const canCreate = require("../middleware/canCreate");
 
 router.get("/", auth, async (req, res) => {
   const location = await Location.find()
+    .select("-__v")
+    .sort("name");
+  res.send(location);
+});
+
+router.get("/:id", [auth, canCreate, validateObjectId], async (req, res) => {
+  const location = await Location.findById({"_id":req.params.id})
     .select("-__v")
     .sort("name");
   res.send(location);

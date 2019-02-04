@@ -51,7 +51,7 @@ router.post("/createadmin", [auth, sadmin], async (req, res) => {
   });
   if (user) return res.status(400).send("User already registered.");
 
-  user = new Admin(_.pick(req.body, ["name", "password", "phone", "role", "owner", "company"]));
+  user = new Admin(_.pick(req.body, ["name", "password", "phone", "role", "owner", "company","location"]));
   const salt = await bcrypt.genSalt(10);
   user.password = await bcrypt.hash(user.password, salt);
   await user.save();
@@ -69,7 +69,7 @@ router.post("/create", [auth, canCreate], async (req, res) => {
   });
   if (user) return res.status(400).send("User already registered.");
 
-  user = new Admin(_.pick(req.body, ["name", "password", "phone", "role", "owner", "company", "manager"]));
+  user = new Admin(_.pick(req.body, ["name", "password", "phone", "role", "owner", "company", "manager","location"]));
   const salt = await bcrypt.genSalt(10);
   user.password = await bcrypt.hash(user.password, salt);
   await user.save();

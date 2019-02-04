@@ -29,9 +29,10 @@ module.exports = function(app) {
   app.use('/api/authAdmin', authAdmin);
   app.use('/api/owners', owners);
   app.use('/api/companies', companies);
+  app.use('/api/locations', locations);
   app.use('/api/menu', menu);
   app.use('/api/tags', tags);
-  app.use('/api/locations', locations);
+
 
   app.use(error);
 }

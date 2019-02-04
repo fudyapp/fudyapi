@@ -5,7 +5,7 @@ const Owner = mongoose.model('Owner', new mongoose.Schema({
     name: {
         type: String,
         required: true,
-        minlength: 5,
+        minlength: 3,
         maxlength: 50
     },
     isActive: {
@@ -22,7 +22,7 @@ const Owner = mongoose.model('Owner', new mongoose.Schema({
 
 function validateOwner(owner) {
     const schema = {
-        name: Joi.string().min(5).max(50).required(),
+        name: Joi.string().min(3).max(50).required(),
         phone: Joi.string().min(5).max(50).required(),
         isActive: Joi.boolean()
     };

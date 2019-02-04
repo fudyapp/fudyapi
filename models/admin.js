@@ -41,6 +41,11 @@ const userSchema = new mongoose.Schema({
     type: mongoose.Schema.Types.ObjectId,
     ref: 'company',
     required: true,
+  },
+  manager: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'manager'
+   
   }
 });
 
@@ -73,9 +78,9 @@ function validateUser(user) {
       .required(),
     role: Joi.string()
       .valid('admin', 'cashier', 'vendor', 'sadmin'),
-    owner: Joi.ObjectId()
+    owner: Joi.objectId()
       .required(),
-    company: Joi.ObjectId()
+    company: Joi.objectId()
       .required()
   };
 
@@ -109,6 +114,12 @@ function ValidateRole(user) {
       .required(),
     role: Joi.string()
       .valid('cashier', 'vendor')
+      .required(),
+    owner: Joi.objectId()
+      .required(),
+    company: Joi.objectId()
+      .required(),
+      manager: Joi.objectId()
       .required()
   }
   return Joi.validate(user, schema);

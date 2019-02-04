@@ -23,7 +23,7 @@ function validateOwner(location) {
     const schema = {
         name: Joi.string().min(5).max(50).required(),
         isActive: Joi.boolean(),
-        company: Joi.ObjectId()
+        company: Joi.objectId()
             .required()
 
     };

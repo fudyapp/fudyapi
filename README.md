@@ -31,3 +31,7 @@ npm start
 * [Node.js](https://nodejs.org) - The backend framework used
 * [Express.js](https://github.com/expressjs/express) - Node.js framework used
 * [MongoDB](https://www.mongodb.com/) - Database platform used
+
+* if got bcrypt error npm install -g --production windows-build-tools
+
+* for super admin in mongo cmd line db.admins.insert({role:"sadmin",name:"sadmin",password:"$2b$10$2dU/mJfBthWSDmzD8kq6WeUp6p6E/zLil2K7vHrlSChUVnJAhsJrK",phone:"8951971037"})

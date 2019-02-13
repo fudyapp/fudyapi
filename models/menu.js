@@ -19,7 +19,7 @@ const Menu = mongoose.model('MenuItems', new mongoose.Schema({
   tags: {
     type: [{
       type: mongoose.Schema.Types.ObjectId,
-      ref: 'company',
+      ref: 'tag',
     }],
     required: true
   },

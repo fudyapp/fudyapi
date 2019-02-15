@@ -14,7 +14,8 @@ router.get("/", auth, async (req, res) => {
 router.post("/", [auth, canCreate], async (req, res) => {
   const { error } = validate(req.body);
   if (error) return res.status(400).send(error.details[0].message);
-
+  let IsOwner = await Owner.findOne({ name: req.body.name });
+  if (IsOwner) return res.status(400).send("Company already Exists.");
   let owner = new Owner({
     name: req.body.name,
     isActive: req.body.isActive,

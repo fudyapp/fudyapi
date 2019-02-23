@@ -8,7 +8,7 @@ const canCreate = require("../middleware/canCreate");
 router.get("/", auth, async (req, res) => {
   const location = await Location.find()
     .select("-__v")
-    .sort("name");
+    .sort("name").populate('company');
   res.send(location);
 });
 

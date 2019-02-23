@@ -34,22 +34,22 @@ const userSchema = new mongoose.Schema({
   },
   owner: {
     type: mongoose.Schema.Types.ObjectId,
-    ref: 'owner',
+    ref: 'Owner',
     required: true,
   },
   company: {
     type: mongoose.Schema.Types.ObjectId,
-    ref: 'company',
+    ref: 'Company',
     required: true,
   },
   location: {
     type: mongoose.Schema.Types.ObjectId,
-    ref: 'location',
+    ref: 'Location',
     required: true,
   },
   manager: {
     type: mongoose.Schema.Types.ObjectId,
-    ref: 'manager'
+    ref: 'admin'
    
   }
 });

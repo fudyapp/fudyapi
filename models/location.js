@@ -14,7 +14,7 @@ const Location = mongoose.model('Location', new mongoose.Schema({
     },
     company: {
         type: mongoose.Schema.Types.ObjectId,
-        ref: 'company',
+        ref: 'Company',
         required: true,
     }
 }).pre('save', function(next){

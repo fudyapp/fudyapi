@@ -17,6 +17,12 @@ router.get("/me", auth, async (req, res) => {
   const user = await Admin.findById(req.user._id).select("-password");
   res.send(user);
 });
+router.get("/all", auth, async (req, res) => {
+  const users = await Admin.find({'role':{$in:['admin','vendor','cashier']}})
+    .select(["-__v","-password"])
+    .sort("name").populate('location').populate('owner').populate('company').populate('manager');
+  res.send(users);
+});
 
 router.post("/", async (req, res) => {
   const {

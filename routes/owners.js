@@ -49,7 +49,7 @@ router.put("/:id", [auth, canCreate], async (req, res) => {
 });
 
 router.delete("/:id", [auth, canCreate], async (req, res) => {
-  const owner = await Owner.findByIdAndRemove(req.params.id);
+  const owner = await Owner.findOneAndDelete(req.params.id);
 
   if (!owner)
     return res

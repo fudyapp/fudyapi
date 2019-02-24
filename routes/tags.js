@@ -51,7 +51,7 @@ router.put("/:id", [auth, validateObjectId], async (req, res) => {
 });
 
 router.delete("/:id", [auth, canCreate, validateObjectId], async (req, res) => {
-  const genre = await Tag.findByIdAndRemove(req.params.id);
+  const genre = await Tag.findOneAndDelete(req.params.id);
 
   if (!genre)
     return res.status(404).send("The genre with the given ID was not found.");

@@ -50,14 +50,14 @@ const userSchema = new mongoose.Schema({
   manager: {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'admin'
-   
+
   }
 });
 
-userSchema.pre('save', function(next){
+userSchema.pre('save', function (next) {
   now = new Date();
   this.updated_at = now;
-  if ( !this.created_at ) {
+  if (!this.created_at) {
     this.created_at = now;
   }
   next();
@@ -90,14 +90,40 @@ function validateUser(user) {
       .min(5)
       .max(255)
       .required(),
+  
     role: Joi.string()
       .valid('admin', 'cashier', 'vendor', 'sadmin'),
+      isActive: Joi.boolean(),
     owner: Joi.objectId()
       .required(),
     company: Joi.objectId()
       .required(),
-      location: Joi.objectId()
-      .required()
+    location: Joi.objectId()
+      .required(),
+    owner: Joi.objectId(),
+    manager: Joi.objectId()
+  };
+
+  return Joi.validate(user, schema);
+}
+
+function validateSadmin(user) {
+  const schema = {
+    name: Joi.string()
+      .min(2)
+      .max(50)
+      .required(),
+    phone: Joi.string()
+      .min(10)
+      .max(10)
+      .required(),
+    password: Joi.string()
+      .min(5)
+      .max(255)
+      .required(),
+    role: Joi.string()
+      .valid('admin', 'cashier', 'vendor', 'sadmin')
+   
   };
 
   return Joi.validate(user, schema);
@@ -108,6 +134,22 @@ function validateEdit(user) {
     name: Joi.string()
       .min(2)
       .max(50)
+      .required(),
+    phone: Joi.string()
+      .min(10)
+      .max(10)
+      .required(),
+    isActive: Joi.boolean(),
+    role: Joi.string()
+      .valid('cashier', 'vendor')
+      .required(),
+    owner: Joi.objectId()
+      .required(),
+    company: Joi.objectId()
+      .required(),
+    manager: Joi.objectId()
+      .required(),
+    location: Joi.objectId()
       .required()
   };
 
@@ -128,6 +170,7 @@ function ValidateRole(user) {
       .min(5)
       .max(255)
       .required(),
+    isActive: Joi.boolean(),
     role: Joi.string()
       .valid('cashier', 'vendor')
       .required(),
@@ -135,11 +178,11 @@ function ValidateRole(user) {
       .required(),
     company: Joi.objectId()
       .required(),
-      manager: Joi.objectId()
+    manager: Joi.objectId()
       .required(),
-      location: Joi.objectId()
+    location: Joi.objectId()
       .required()
-      
+
   }
   return Joi.validate(user, schema);
 };
@@ -148,3 +191,4 @@ exports.Admin = User;
 exports.validate = validateUser;
 exports.validateEdit = validateEdit;
 exports.ValidateRole = ValidateRole;
+exports.validateSadmin= validateSadmin;

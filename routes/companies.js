@@ -9,6 +9,13 @@ router.get("/", [auth, canCreate], async (req, res) => {
   const company = await Company.find()
     .select("-__v")
     .sort("name");
+    
+  res.send(company);
+});
+router.get("/owner/:id", [auth, canCreate], async (req, res) => {
+  const company = await Company.find({'owner':req.params.id})
+    .select("-__v")
+    .sort("name");
   res.send(company);
 });
 router.get("/:id", [auth, canCreate, validateObjectId], async (req, res) => {
@@ -53,7 +60,7 @@ router.put("/:id", [auth, canCreate], async (req, res) => {
 });
 
 router.delete("/:id", [auth, canCreate], async (req, res) => {
-  const company = await Company.findByIdAndRemove(req.params.id);
+  const company = await Company.findOneAndDelete(req.params.id);
 
   if (!company)
     return res

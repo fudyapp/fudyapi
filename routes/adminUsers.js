@@ -8,7 +8,8 @@ const {
   Admin,
   validate,
   validateEdit,
-  ValidateRole
+  ValidateRole,
+  validateSadmin
 } = require("../models/admin");
 const express = require("express");
 const router = express.Router();
@@ -17,17 +18,31 @@ router.get("/me", auth, async (req, res) => {
   const user = await Admin.findById(req.user._id).select("-password");
   res.send(user);
 });
+
 router.get("/all", auth, async (req, res) => {
   const users = await Admin.find({'role':{$in:['admin','vendor','cashier']}})
     .select(["-__v","-password"])
     .sort("name").populate('location').populate('owner').populate('company').populate('manager');
   res.send(users);
 });
+router.get("/admins/:id", auth, async (req, res) => {
+  const users = await Admin.find({'role':{$in:['admin']},'company':req.params.id})
+    .select(["-__v","-password"])
+    .sort("name").populate('location').populate('owner').populate('company').populate('manager');
+  res.send(users);
+});
+router.get("/roles", auth, async (req, res) => {
+  // const users = await Admin.find({'role':{$in:['admin','vendor','cashier']}})
+  //   .select(["-__v","-password"])
+  //   .sort("name").populate('location').populate('owner').populate('company').populate('manager');
+  const roles = ['admin','vendor','cashier']
+  res.send(roles);
+});
 
 router.post("/", async (req, res) => {
   const {
     error
-  } = validate(req.body);
+  } = validateSadmin(req.body);
   if (error) return res.status(400).send(error.details[0].message);
 
   let user = await Admin.findOne({
@@ -35,7 +50,7 @@ router.post("/", async (req, res) => {
   });
   if (user) return res.status(400).send("User already registered.");
 
-  user = new Admin(_.pick(req.body, ["name", "password", "phone", "role", "owner", "company"]));
+  user = new Admin(_.pick(req.body, ["name", "password", "phone", "role"]));
   const salt = await bcrypt.genSalt(10);
   user.password = await bcrypt.hash(user.password, salt);
   await user.save();
@@ -57,7 +72,7 @@ router.post("/createadmin", [auth, sadmin], async (req, res) => {
   });
   if (user) return res.status(400).send("User already registered.");
 
-  user = new Admin(_.pick(req.body, ["name", "password", "phone", "role", "owner", "company","location"]));
+  user = new Admin(_.pick(req.body, ["name", "password", "phone", "role", "owner", "company","location",'manager','isActive']));
   const salt = await bcrypt.genSalt(10);
   user.password = await bcrypt.hash(user.password, salt);
   await user.save();
@@ -75,7 +90,7 @@ router.post("/create", [auth, canCreate], async (req, res) => {
   });
   if (user) return res.status(400).send("User already registered.");
 
-  user = new Admin(_.pick(req.body, ["name", "password", "phone", "role", "owner", "company", "manager","location"]));
+  user = new Admin(_.pick(req.body, ["name", "password", "phone", "role", "owner", "company", "manager","location",'isActive']));
   const salt = await bcrypt.genSalt(10);
   user.password = await bcrypt.hash(user.password, salt);
   await user.save();
@@ -108,10 +123,14 @@ router.put("/edit/:id", [auth, canCreate, validateObjectId], async (req, res) =>
   if (error) return res.status(400).send(error.details[0].message);
   // let user = await Admin.findOneAndUpdate({ _id: req.params.id },_.pick(req.body, ["name"]));
   // if (user)  {res.send(_.pick(user, ["_id", "name","phone"]));}
+  let isUser = await Admin.findOne({
+    phone: req.body.phone
+  });
+  if (isUser) return res.status(400).send("User already registered.");
   const user = await Admin.findByIdAndUpdate(
-    req.params.id, {
-      name: req.body.name
-    }, {
+    req.params.id, 
+      req.body
+    , {
       new: true
     }
   );
@@ -123,7 +142,12 @@ router.put("/edit/:id", [auth, canCreate, validateObjectId], async (req, res) =>
 });
 router.delete("/delete/:id", [auth, canCreate, validateObjectId], async (req, res) => {
   if (req.user._id !== req.params.id) {
-    const user = await Admin.findByIdAndRemove(req.params.id);
+    const user = await Admin.findByIdAndUpdate(req.params.id,
+      {
+        
+        isActive: false
+      },
+      { new: true });
     if (!user)
       return res.status(404).send("The user with the given ID was not found.");
 

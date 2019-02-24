@@ -11,6 +11,12 @@ router.get("/", auth, async (req, res) => {
     .sort("name").populate('company');
   res.send(location);
 });
+router.get("/company/:id", auth, async (req, res) => {
+  const locations = await Location.find({'company':req.params.id})
+    .select("-__v")
+    .sort("name").populate('company');
+  res.send(locations);
+});
 
 router.get("/:id", [auth, canCreate, validateObjectId], async (req, res) => {
   const location = await Location.findById({"_id":req.params.id})
@@ -55,7 +61,7 @@ router.put("/:id", [auth, canCreate], async (req, res) => {
 });
 
 router.delete("/:id", [auth, canCreate], async (req, res) => {
-  const location = await Location.findByIdAndRemove(req.params.id);
+  const location = await Location.findOneAndDelete(req.params.id);
 
   if (!location)
     return res

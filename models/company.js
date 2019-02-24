@@ -11,6 +11,11 @@ const Company = mongoose.model('Company', new mongoose.Schema({
     isActive: {
         type: Boolean,
         default: true
+    },
+    owner: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Owner',
+        required: true,
     }
 }).pre('save', function(next){
     now = new Date();
@@ -21,14 +26,16 @@ const Company = mongoose.model('Company', new mongoose.Schema({
     next();
   }));
 
-function validateOwner(company) {
+function validateCompany(company) {
     const schema = {
         name: Joi.string().min(3).max(50).required(),
-        isActive: Joi.boolean()
+        isActive: Joi.boolean(),
+        owner: Joi.objectId()
+        .required()
     };
 
     return Joi.validate(company, schema);
 }
 
 exports.Company = Company;
-exports.validate = validateOwner;
+exports.validate = validateCompany;

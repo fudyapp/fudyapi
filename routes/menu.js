@@ -59,7 +59,7 @@ router.put("/:id", [auth], async (req, res) => {
 });
 
 router.delete("/:id", [auth, admin], async (req, res) => {
-  const menu = await Menu.findByIdAndRemove(req.params.id);
+  const menu = await Menu.findOneAndDelete(req.params.id);
 
   if (!menu)
     return res.status(404).send("The menu with the given ID was not found.");

@@ -3,6 +3,7 @@ const { Tag } = require("../models/tag");
 const auth = require("../middleware/auth");
 const admin = require("../middleware/admin");
 const validateObjectId = require("../middleware/validateObjectId");
+const canCreate = require("../middleware/canCreate");
 const moment = require("moment");
 const mongoose = require("mongoose");
 const express = require("express");
@@ -11,7 +12,7 @@ const router = express.Router();
 router.get("/", async (req, res) => {
   const menuItems = await Menu.find()
     .select("-__v")
-    .sort("name");
+    .sort("name").populate('tags').populate('vendor');
   res.send(menuItems);
 });
 
@@ -27,7 +28,8 @@ router.post("/", [auth], async (req, res) => {
     tags: req.body.tags,
     numberInStock: req.body.numberInStock,
     price: req.body.price,
-    vendor: req.body.vendor
+    vendor: req.body.vendor,
+    image:req.body.image
   });
   await menu.save();
 
@@ -58,7 +60,7 @@ router.put("/:id", [auth], async (req, res) => {
   res.send(menu);
 });
 
-router.delete("/:id", [auth, admin], async (req, res) => {
+router.delete("/:id", [auth, canCreate, validateObjectId], async (req, res) => {
   const menu = await Menu.findOneAndDelete(req.params.id);
 
   if (!menu)

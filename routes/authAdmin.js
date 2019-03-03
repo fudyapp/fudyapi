@@ -8,6 +8,8 @@ const mongoose = require('mongoose');
 const express = require('express');
 const router = express.Router();
 
+//for admin users
+
 router.post('/', async (req, res) => {
   const {
     error

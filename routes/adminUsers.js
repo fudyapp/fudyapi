@@ -14,6 +14,8 @@ const {
 const express = require("express");
 const router = express.Router();
 
+
+//for admin user details
 router.get("/me", auth, async (req, res) => {
   const user = await Admin.findById(req.user._id).select("-password");
   res.send(user);
@@ -21,6 +23,18 @@ router.get("/me", auth, async (req, res) => {
 
 router.get("/all", auth, async (req, res) => {
   const users = await Admin.find({'role':{$in:['admin','vendor','cashier']}})
+    .select(["-__v","-password"])
+    .sort("name").populate('location').populate('owner').populate('company').populate('manager');
+  res.send(users);
+});
+router.get("/vendors", auth, async (req, res) => {
+  const users = await Admin.find({'role':{$in:['vendor']}})
+    .select(["-__v","-password"])
+    .sort("name").populate('location').populate('owner').populate('company').populate('manager');
+  res.send(users);
+});
+router.get("/cashiers", auth, async (req, res) => {
+  const users = await Admin.find({'role':{$in:['cashier']}})
     .select(["-__v","-password"])
     .sort("name").populate('location').populate('owner').populate('company').populate('manager');
   res.send(users);

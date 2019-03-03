@@ -19,7 +19,7 @@ const Menu = mongoose.model('MenuItems', new mongoose.Schema({
   tags: {
     type: [{
       type: mongoose.Schema.Types.ObjectId,
-      ref: 'tag',
+      ref: 'Tag',
     }],
     required: true
   },
@@ -37,26 +37,25 @@ const Menu = mongoose.model('MenuItems', new mongoose.Schema({
   },
   image: {
     type: String,
-    minlength: 5,
+    minlength: 0,
     maxlength: 255
 
   },
   vendor:{
     type: mongoose.Schema.Types.ObjectId,
-    ref: 'vendor',
+    ref: 'admin',
     required: true,
   }
 }));
 
 function validateMenu(menu) {
   const schema = {
-    name: Joi.string().min(5).max(50).required(),
+    name: Joi.string().min(5).max(255).required(),
     tags: Joi.array().min(1).items(Joi.objectId()).required(),
     numberInStock: Joi.number().min(0).required(),
     price: Joi.number().min(0).required(),
-    image: Joi.string().min(5).max(50).required(),
-    vendor: Joi.objectId()
-    .required()
+    image: Joi.string().min(5).max(255),
+    vendor: Joi.objectId().required()
   };
 
   return Joi.validate(menu, schema);

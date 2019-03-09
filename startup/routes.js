@@ -13,6 +13,9 @@ const companies = require('../routes/companies');
 const menu = require('../routes/menu');
 const tags = require('../routes/tags');
 const locations = require('../routes/locations');
+const wallet = require('../routes/wallet');
+const userPreference = require('../routes/preference');
+const orders = require('../routes/orders');
 
 const error = require('../middleware/error');
 
@@ -32,6 +35,9 @@ module.exports = function(app) {
   app.use('/api/locations', locations);
   app.use('/api/menu', menu);
   app.use('/api/tags', tags);
+  app.use('/api/wallet', wallet);
+  app.use('/api/preference', userPreference);
+   app.use('/api/orders', orders);
 
 
   app.use(error);

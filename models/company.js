@@ -30,8 +30,7 @@ function validateCompany(company) {
     const schema = {
         name: Joi.string().min(3).max(50).required(),
         isActive: Joi.boolean(),
-        owner: Joi.objectId()
-        .required()
+        owner: Joi.objectId().required()
     };
 
     return Joi.validate(company, schema);

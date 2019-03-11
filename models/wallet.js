@@ -35,5 +35,14 @@ function validateWallet(Wallet) {
     return Joi.validate(Wallet, schema);
 }
 
+function validateWalletUpdate(Wallet) {
+    const schema = {
+        amount: Joi.number().min(0).required(),
+        isActive: Joi.boolean()
+    };
+    return Joi.validate(Wallet, schema);
+}
+
 exports.Wallet = Wallet;
 exports.validate = validateWallet;
+exports.validateWalletUpdate=validateWalletUpdate;

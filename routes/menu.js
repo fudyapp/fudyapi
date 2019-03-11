@@ -77,5 +77,18 @@ router.get("/:id", validateObjectId, async (req, res) => {
 
   res.send(menu);
 });
+router.get("/vendor/:id", validateObjectId, async (req, res) => {
+  let menu=null;
+  if(req.query && req.query.tags){
+  menu = await Menu.find({vendor:req.params.id,tags:{$in:[req.query.tags]}}).select("-__v");
+}else {
+   menu = await Menu.find({vendor:req.params.id}).select("-__v");
+}
+
+  if (!menu)
+    return res.status(404).send("The menu with the given ID was not found.");
+
+  res.send(menu);
+});
 
 module.exports = router;

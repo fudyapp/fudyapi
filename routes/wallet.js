@@ -1,6 +1,6 @@
 const {
   Wallet,
-  validate
+  validate,validateWalletUpdate
 } = require("../models/wallet");
 const {
   User
@@ -51,14 +51,13 @@ router.post("/", [auth, canCreate], async (req, res) => {
 router.put("/:id", [auth, canCreate], async (req, res) => {
   const {
     error
-  } = validate(req.body);
+  } = validateWalletUpdate(req.body);
   if (error) return res.status(400).send(error.details[0].message);
 
   const wallet = await Wallet.findByIdAndUpdate(
     req.params.id, {
       amount: req.body.amount,
       isActive: req.body.isActive,
-      user: req.body.user
     }, {
       new: true
     }

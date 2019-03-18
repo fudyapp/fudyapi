@@ -17,31 +17,82 @@ const router = express.Router();
 
 //for admin user details
 router.get("/me", auth, async (req, res) => {
-  const user = await Admin.findById(req.user._id).select("-password");
+  const user = await Admin.findById(req.user._id).select("-password").populate('owner').populate('company').populate('manager').populate('location');
   res.send(user);
 });
 
 router.get("/all", auth, async (req, res) => {
-  const users = await Admin.find({'role':{$in:['admin','vendor','cashier']}})
-    .select(["-__v","-password"])
+  const users = await Admin.find({
+      'role': {
+        $in: ['admin', 'vendor', 'cashier']
+      }
+    })
+    .select(["-__v", "-password"])
     .sort("name").populate('location').populate('owner').populate('company').populate('manager');
   res.send(users);
 });
+// router.get("/vendors", auth, async (req, res) => {
+//   const users = await Admin.find({
+//       'role': {
+//         $in: ['vendor']
+//       }
+//     })
+//     .select(["-__v", "-password"])
+//     .sort("name").populate('location').populate('owner').populate('company').populate('manager');
+//   res.send(users);
+// });
 router.get("/vendors", auth, async (req, res) => {
-  const users = await Admin.find({'role':{$in:['vendor']}})
-    .select(["-__v","-password"])
+  let filter = null;
+  if (req.query.location) {
+    filter = {
+      'role': {
+        $in: ['vendor']
+      },
+      'location': req.query.location
+
+    }
+  } else {
+    filter = {
+      'role': {
+        $in: ['vendor']
+      }
+    }
+  }
+  const users = await Admin.find(filter)
+    .select(["-__v", "-password"])
     .sort("name").populate('location').populate('owner').populate('company').populate('manager');
   res.send(users);
 });
 router.get("/cashiers", auth, async (req, res) => {
-  const users = await Admin.find({'role':{$in:['cashier']}})
-    .select(["-__v","-password"])
+  let filter = null;
+  if (req.query.location) {
+    filter = {
+      'role': {
+        $in: ['cashier']
+      },
+      'location': req.query.location
+
+    }
+  } else {
+    filter = {
+      'role': {
+        $in: ['cashier']
+      }
+    }
+  }
+  const users = await Admin.find(filter)
+    .select(["-__v", "-password"])
     .sort("name").populate('location').populate('owner').populate('company').populate('manager');
   res.send(users);
 });
 router.get("/admins/:id", auth, async (req, res) => {
-  const users = await Admin.find({'role':{$in:['admin']},'company':req.params.id})
-    .select(["-__v","-password"])
+  const users = await Admin.find({
+      'role': {
+        $in: ['admin']
+      },
+      'company': req.params.id
+    })
+    .select(["-__v", "-password"])
     .sort("name").populate('location').populate('owner').populate('company').populate('manager');
   res.send(users);
 });
@@ -49,7 +100,7 @@ router.get("/roles", auth, async (req, res) => {
   // const users = await Admin.find({'role':{$in:['admin','vendor','cashier']}})
   //   .select(["-__v","-password"])
   //   .sort("name").populate('location').populate('owner').populate('company').populate('manager');
-  const roles = ['admin','vendor','cashier']
+  const roles = ['admin', 'vendor', 'cashier']
   res.send(roles);
 });
 
@@ -86,7 +137,7 @@ router.post("/createadmin", [auth, sadmin], async (req, res) => {
   });
   if (user) return res.status(400).send("User already registered.");
 
-  user = new Admin(_.pick(req.body, ["name", "password", "phone", "role", "owner", "company","location",'manager','isActive']));
+  user = new Admin(_.pick(req.body, ["name", "password", "phone", "role", "owner", "company", "location", 'manager', 'isActive']));
   const salt = await bcrypt.genSalt(10);
   user.password = await bcrypt.hash(user.password, salt);
   await user.save();
@@ -104,7 +155,7 @@ router.post("/create", [auth, canCreate], async (req, res) => {
   });
   if (user) return res.status(400).send("User already registered.");
 
-  user = new Admin(_.pick(req.body, ["name", "password", "phone", "role", "owner", "company", "manager","location",'isActive']));
+  user = new Admin(_.pick(req.body, ["name", "password", "phone", "role", "owner", "company", "manager", "location", 'isActive']));
   const salt = await bcrypt.genSalt(10);
   user.password = await bcrypt.hash(user.password, salt);
   await user.save();
@@ -142,9 +193,8 @@ router.put("/edit/:id", [auth, canCreate, validateObjectId], async (req, res) =>
   });
   if (isUser) return res.status(400).send("User already registered.");
   const user = await Admin.findByIdAndUpdate(
-    req.params.id, 
-      req.body
-    , {
+    req.params.id,
+    req.body, {
       new: true
     }
   );
@@ -156,12 +206,12 @@ router.put("/edit/:id", [auth, canCreate, validateObjectId], async (req, res) =>
 });
 router.delete("/delete/:id", [auth, canCreate, validateObjectId], async (req, res) => {
   if (req.user._id !== req.params.id) {
-    const user = await Admin.findByIdAndUpdate(req.params.id,
-      {
-        
-        isActive: false
-      },
-      { new: true });
+    const user = await Admin.findByIdAndUpdate(req.params.id, {
+
+      isActive: false
+    }, {
+      new: true
+    });
     if (!user)
       return res.status(404).send("The user with the given ID was not found.");
 

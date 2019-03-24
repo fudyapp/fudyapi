@@ -7,7 +7,7 @@ const {
 const auth = require("../middleware/auth");
 const express = require("express");
 const router = express.Router();
-const canCreate = require("../middleware/canCreate");
+const canUserEdit = require("../middleware/canUserEdit");
 
 router.get("/", auth, async (req, res) => {
     const preferences = await userPreference.find()
@@ -38,7 +38,7 @@ router.get("/", auth, async (req, res) => {
     res.send(preferences);
 });
 
-router.post("/", [auth, canCreate], async (req, res) => {
+router.post("/", [auth, canUserEdit], async (req, res) => {
     const {
         error
     } = validate(req.body);
@@ -61,7 +61,7 @@ router.post("/", [auth, canCreate], async (req, res) => {
     res.send(preference);
 });
 
-router.put("/:id", [auth, canCreate], async (req, res) => {
+router.put("/:id", [auth, canUserEdit], async (req, res) => {
     const {
         error
     } = validate(req.body);
@@ -85,7 +85,7 @@ router.put("/:id", [auth, canCreate], async (req, res) => {
     res.send(Preference);
 });
 
-router.delete("/:id", [auth, canCreate], async (req, res) => {
+router.delete("/:id", [auth, canUserEdit], async (req, res) => {
     const Preference = await userPreference.findOneAndDelete(req.params.id);
 
     if (!Preference)
@@ -96,7 +96,7 @@ router.delete("/:id", [auth, canCreate], async (req, res) => {
     res.send(Preference);
 });
 
-router.get("/:id", [auth, canCreate], async (req, res) => {
+router.get("/:id", [auth, canUserEdit], async (req, res) => {
     const Preference = await userPreference.findOne({
         _id: req.params.id
     }).select("-__v")        .populate({
@@ -130,7 +130,7 @@ router.get("/:id", [auth, canCreate], async (req, res) => {
 
     res.send(Preference);
 });
-router.get("/user/:id", [auth, canCreate], async (req, res) => {
+router.get("/user/:id", [auth, canUserEdit], async (req, res) => {
     const Preference = await userPreference.findOne({
         user: req.params.id
     }).select("-__v")        .populate({

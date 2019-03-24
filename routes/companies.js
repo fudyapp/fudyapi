@@ -5,7 +5,7 @@ const express = require("express");
 const router = express.Router();
 const canCreate = require("../middleware/canCreate");
 
-router.get("/", [auth, canCreate], async (req, res) => {
+router.get("/", [auth], async (req, res) => {
   const company = await Company.find()
     .select("-__v")
     .sort("name");
